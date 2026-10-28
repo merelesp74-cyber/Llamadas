@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard de llamadas a locales</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1c2430;--mut:#6b7686;--bd:#e2e6ec;--ac:#1f6feb;--ok:#1a8f4d;--okbg:#e3f6ea;--pe:#b7791f;--pebg:#fdf1d8;--ob:#7c3aed;--obbg:#efe7fd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1b212a;--tx:#e7ebf0;--mut:#98a3b3;--bd:#2c3440;--ac:#5aa2ff;--ok:#4cd488;--okbg:#17352414;--pe:#f0b94d;--pebg:#3a2f1426;--ob:#b794f6;--obbg:#2a1f4426}}
+:root[data-theme="dark"]{--bg:#12161c;--card:#1b212a;--tx:#e7ebf0;--mut:#98a3b3;--bd:#2c3440;--ac:#5aa2ff;--ok:#4cd488;--okbg:#17352414;--pe:#f0b94d;--pebg:#3a2f1426;--ob:#b794f6;--obbg:#2a1f4426}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;margin:0 0 2px;text-align:center}
+.sub{color:var(--mut);margin:0 0 18px;font-size:14px;text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:28px;line-height:1.1}
+.kpi span{color:var(--mut);font-size:13px}
+.prog{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.bar{height:10px;border-radius:99px;background:var(--bd);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+input[type=text],input[type=date],input[type=month],input[type=time],select,textarea{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font:inherit;min-width:0}
+.tools input[type=text]{flex:1 1 200px}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+button.g{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+details{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+summary{cursor:pointer;font-weight:600}
+details textarea{width:100%;min-height:110px;margin:10px 0}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+td input{width:100%}
+td input:disabled{opacity:.9;color:var(--tx);-webkit-text-fill-color:var(--tx);cursor:not-allowed}
+.h2{font-size:17px;margin:28px 0 10px;text-align:center}
+#ht{min-width:640px}
+.th{height:44px;width:44px;object-fit:cover;border-radius:6px;border:1px solid var(--bd);vertical-align:middle}
+.fb{display:inline-block;border:1px dashed var(--bd);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;color:var(--ac);white-space:nowrap}
+.fa{margin-top:6px}
+#toast{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);text-align:center}
+tr:last-child td{border-bottom:0}
+td.n{color:var(--mut);width:42px}
+.name{font-weight:600}
+.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:600;border:0}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.pe{background:var(--pebg);color:var(--pe)}
+.fecha{color:var(--mut);font-size:12px;display:block;margin-top:3px}
+td textarea{width:100%;min-height:38px;resize:vertical}
+.has textarea{border-color:var(--ob);background:var(--obbg)}
+.x{background:transparent;color:var(--mut);padding:4px 8px}
+.empty{padding:30px;text-align:center;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Llamadas a locales aleatorios</h1>
+  <p class="sub">Jefatura de Prevención</p>
+
+  <div class="kpis">
+    <div class="kpi"><b id="kT">0</b><span>Locales en total</span></div>
+    <div class="kpi"><b id="kO" style="color:var(--ok)">0</b><span>Llamada realizada</span></div>
+    <div class="kpi"><b id="kP" style="color:var(--pe)">0</b><span>Pendientes</span></div>
+    <div class="kpi"><b id="kB" style="color:var(--ob)">0</b><span>Con observaciones</span></div>
+  </div>
+  <div class="prog"><span id="pt">Avance: 0%</span><div class="bar"><i id="pb"></i></div></div>
+
+  <details id="add" hidden>
+    <summary>Agregar locales</summary>
+    <textarea id="names" placeholder="Pega los nombres de los locales, uno por línea"></textarea>
+    <button id="addBtn">Agregar locales</button>
+    <button class="g" id="markBtn" title="Marca como llamados los nombres pegados">Marcar pegados como llamados</button>
+  </details>
+
+  <div class="tools">
+    <input type="text" id="q" placeholder="Buscar local u observación…">
+    <select id="f">
+      <option value="all">Todos</option>
+      <option value="done">Llamada realizada</option>
+      <option value="pend">Pendientes</option>
+      <option value="obs">Con observaciones</option>
+    </select>
+    <button class="g" id="copy">Copiar tabla (CSV)</button>
+    <button class="g" id="reset">Restablecer llamadas</button>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Local</th><th>Llamada</th><th>Fecha de llamada</th><th>Horario</th><th>Operador</th><th>Observaciones</th><th></th></tr></thead>
+    <tbody id="tb"></tbody>
+  </table></div>
+
+  <h2 class="h2">Historial de llamadas</h2>
+  <div class="tools"><input type="month" id="hm"><button class="g" id="hcopy">Copiar historial del mes (CSV)</button></div>
+  <p class="sub" id="hsum"></p>
+  <div class="tw"><table id="ht"></table></div>
+  <div id="toast"></div>
+</div>
+
+<script>
+const KEY="llamadas_locales_v1";
+const SEED=["10 DE JULIO","21 PROYECTADAS","ACOSTA ÑU","AMERICO PICCO","AVDA. FERNANDO","AVDA. PARAGUAY","AVENIDA ESPAÑA","BERNARDINO CABALLERO","BOQUERON","BRASILIA","BRITEZ BORGES","CAMPO JORDAN","CAMPO VIA","FIGUEROA","GRAL SANTOS 2","GUATAMBU","LA VICTORIA","LAS MERCEDES","LAS RESIDENTAS","MOLAS LOPEZ","MOMPOX","NANAWA","PA’I ÑU","PALMA LOMA","PANCHITO LOPEZ","PATRICIO ESCOBAR","PERU","PINEDO","PIQUETE CUE","PITIANTUTA","PRATT GILL","RCA. DE COLOMBIA","S6 EXPRESS 1ER. PRESIDENTE","S6 EXPRESS MOEITY","S6 EXPRESS OVIEDO","S6 EXPRESS R.I. 6 BOQUERON","S6 EXPRESS SAN MARTIN","S6 MOLAS LOPEZ","S6 EXPRESS SAN BERNARDINO","S6 SAN BER 2","S6 EXPRESS YACHT","SACRAMENTO","SAJONIA 1","SAJONIA 2","SAN ISIDRO","SAN LORENZO","SOLDADO OVELAR","STOCK EXPRESS 1ER. PRESIDENTE","STOCK EXPRESS OVIEDO","TOBATI","TTE MOLAS","VILLA HAYES","ZEBALLOS"];
+let data=SEED.map(n=>({name:n,done:true,date:"",obs:""}));
+try{const s=localStorage.getItem(KEY);if(s)data=JSON.parse(s)}catch(e){}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+const norm=s=>s.trim().toLowerCase();
+function today(){const d=new Date(),p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())}
+function nowTime(){const d=new Date(),p=n=>String(n).padStart(2,"0");return p(d.getHours())+":"+p(d.getMinutes())}
+function isoOk(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||"")}
+function fmt(s){return isoOk(s)?s.split("-").reverse().join("/"):(s||"")}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function lines(){return $("names").value.split("\n").map(s=>s.trim()).filter(Boolean)}
+
+function stats(){
+  const t=data.length,o=data.filter(d=>d.done).length,b=data.filter(d=>d.obs.trim()).length;
+  $("kT").textContent=t;$("kO").textContent=o;$("kP").textContent=t-o;$("kB").textContent=b;
+  const p=t?Math.round(o/t*100):0;$("pt").textContent="Avance: "+p+"% ("+o+" de "+t+")";$("pb").style.width=p+"%";
+}
+function render(){
+  const q=norm($("q").value),f=$("f").value;
+  const rows=data.map((d,i)=>({d,i})).filter(({d})=>{
+    if(f==="done"&&!d.done)return false;
+    if(f==="pend"&&d.done)return false;
+    if(f==="obs"&&!d.obs.trim())return false;
+    return !q||norm(d.name).includes(q)||norm(d.obs).includes(q)||norm(d.op||"").includes(q);
+  });
+  $("tb").innerHTML=rows.length?rows.map(({d,i})=>
+   `<tr class="${d.obs.trim()?'has':''}"><td class="n">${i+1}</td>
+    <td class="name">${esc(d.name)}</td>
+    <td><span class="pill ${d.done?'ok':'pe'}">${d.done?'✓ Realizada':'Pendiente'}</span></td>
+    <td><input type="date" data-d="${i}" disabled value="${isoOk(d.date)?d.date:''}"></td>
+    <td><input type="time" data-h="${i}" disabled value="${esc(d.hora||'')}"></td>
+    <td><input type="text" data-p="${i}" value="${esc(d.op||'')}" placeholder="Operador"></td>
+    <td><textarea data-o="${i}" placeholder="Sin observaciones">${esc(d.obs)}</textarea>
+    <div class="fa" data-fa="${i}" ${d.obs.trim()?'':'hidden'}>${d.foto?`<a href="/_blob/${esc(d.foto)}" target="_blank"><img class="th" src="/_blob/${esc(d.foto)}" alt="Foto"></a> <button class="x" data-xf="${i}" title="Quitar foto">✕</button>`:`<label class="fb">📷 Adjuntar foto<input type="file" accept="image/*" data-f="${i}" hidden></label>`}</div></td>
+    <td><button class="x" data-x="${i}" title="Eliminar">✕</button></td></tr>`).join("")
+   :`<tr><td colspan="8" class="empty">${data.length?"Ningún local coincide con el filtro.":"Aún no hay locales. Pega los nombres arriba para empezar."}</td></tr>`;
+  stats();
+}
+function addNames(markDone){
+  const ls=lines();if(!ls.length)return;
+  ls.forEach(n=>{
+    const ex=data.find(d=>norm(d.name)===norm(n));
+    if(ex){if(markDone&&!ex.done){ex.done=true;ex.date=today()}}
+    else data.push({name:n,done:!!markDone,date:markDone?today():"",obs:""});
+  });
+  $("names").value="";save();render();
+}
+$("addBtn").onclick=()=>addNames(false);
+$("markBtn").onclick=()=>addNames(true);
+$("q").oninput=render;$("f").onchange=render;
+$("tb").addEventListener("click",e=>{
+  const t=e.target.dataset;
+  if(t.t!==undefined){const d=data[+t.t];d.done=!d.done;d.date=d.done?today():"";save();render()}
+  if(t.xf!==undefined){const r=data[+t.xf];r.foto="";save();render();sync(r)}
+  if(t.x!==undefined){if(confirm("¿Eliminar "+data[+t.x].name+"?")){data.splice(+t.x,1);save();render()}}
+});
+$("tb").addEventListener("input",e=>{
+  const t=e.target.dataset;
+  if(t.o===undefined)return;
+  const r=data[+t.o],has=!!e.target.value.trim();
+  r.obs=e.target.value;if(!has)r.foto="";
+  const fa=$("tb").querySelector('[data-fa="'+t.o+'"]');if(fa)fa.hidden=!has;
+  e.target.closest("tr").classList.toggle("has",has);
+  save();stats();
+});
+$("tb").addEventListener("change",async e=>{
+  const t=e.target.dataset;
+  if(t.f!==undefined){const r=data[+t.f],f=e.target.files[0];if(!f)return;if(!A){toast("No se pudo adjuntar: sin permiso para subir fotos.");return}toast("Subiendo foto…");try{const b=await shrink(f),up=await A.upload(b);r.foto=up.id;save();render();sync(r);toast("Foto adjuntada")}catch(x){toast("No se pudo subir la foto.")}return}
+  if(t.h!==undefined){const r=data[+t.h];r.hora=e.target.value;if(r.hora)r.done=true;save();render();sync(r)}
+  if(t.o!==undefined){const r=data[+t.o];r.obs=e.target.value;if(!r.obs.trim())r.foto="";save();sync(r);if(!r.obs.trim())render()}
+  if(t.d!==undefined){const r=data[+t.d];r.date=e.target.value;if(r.date)r.done=true;else if(!r.op)r.done=false;save();render();sync(r)}
+  if(t.p!==undefined){const r=data[+t.p];r.op=e.target.value.trim();if(r.op){r.done=true;if(!r.date)r.date=today();if(!r.hora)r.hora=nowTime()}else{r.done=false;r.date="";r.hora=""}save();render();sync(r)}
+});
+$("copy").onclick=async()=>{
+  const q=s=>'"'+s.replace(/"/g,'""')+'"';
+  const csv=["Local,Llamada,Fecha de llamada,Horario,Operador,Observaciones",...data.map(d=>[q(d.name),d.done?"Realizada":"Pendiente",fmt(d.date),d.hora||"",q(d.op||""),q(d.obs)].join(","))].join("\n");
+  try{await navigator.clipboard.writeText(csv);$("copy").textContent="¡Copiado!"}catch(e){$("copy").textContent="No se pudo copiar"}
+  setTimeout(()=>$("copy").textContent="Copiar tabla (CSV)",1800);
+};
+let DB=null,HIST=[],A=null;
+function toast(m){const t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",3200)}
+function shrink(f){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=no;fr.onload=()=>{const im=new Image();im.onerror=no;im.onload=()=>{const s=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?ok(b):no(),"image/jpeg",.75)};im.src=fr.result};fr.readAsDataURL(f)})}
+const slug=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9]+/g,"-").toLowerCase();
+async function sync(d){
+  if(!DB)return;
+  try{
+    const k=d.done&&d.date?d.date+"_"+slug(d.name):null;
+    if(d.k&&d.k!==k)await DB.doc("llamadas/"+d.k).delete();
+    if(k)await DB.doc("llamadas/"+k).set({name:d.name,date:d.date,hora:d.hora||"",op:d.op||"",obs:d.obs||"",foto:d.foto||""});
+    d.k=k;save();loadHist();
+  }catch(e){}
+}
+async function loadHist(){
+  if(DB){try{const s=await DB.collection("llamadas").get();HIST=s.docs.map(x=>x.data())}catch(e){}}
+  renderHist();
+}
+function histMonth(){
+  const m=$("hm").value;
+  return HIST.filter(h=>!m||(h.date||"").startsWith(m)).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(a.hora||"").localeCompare(b.hora||"")||(a.name||"").localeCompare(b.name||""));
+}
+function renderHist(){
+  const rows=histMonth(),dias=new Set(rows.map(r=>r.date)).size;
+  $("hsum").textContent=DB?(rows.length+" llamadas en "+dias+" día(s) del mes seleccionado"):"El historial no está disponible en esta vista: los registros no se están guardando.";
+  $("ht").innerHTML="<thead><tr><th>Fecha</th><th>Horario</th><th>Local</th><th>Operador</th><th>Observaciones</th><th>Foto</th></tr></thead><tbody>"+(rows.length?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td>${esc(r.hora||"")}</td><td class="name">${esc(r.name||"")}</td><td>${esc(r.op||"")}</td><td>${esc(r.obs||"")}</td><td>${r.foto?`<a href="/_blob/${esc(r.foto)}" target="_blank"><img class="th" src="/_blob/${esc(r.foto)}" alt="Foto"></a>`:""}</td></tr>`).join(""):'<tr><td colspan="6" class="empty">Sin registros en este mes.</td></tr>')+"</tbody>";
+}
+$("hm").value=today().slice(0,7);
+$("hm").onchange=renderHist;
+$("hcopy").onclick=async()=>{
+  const q=s=>'"'+String(s||"").replace(/"/g,'""')+'"';
+  const csv=["Fecha,Horario,Local,Operador,Observaciones",...histMonth().map(r=>[fmt(r.date),r.hora||"",q(r.name),q(r.op),q(r.obs)].join(","))].join("\n");
+  try{await navigator.clipboard.writeText(csv);$("hcopy").textContent="¡Copiado!"}catch(e){$("hcopy").textContent="No se pudo copiar"}
+  setTimeout(()=>$("hcopy").textContent="Copiar historial del mes (CSV)",1800);
+};
+(async()=>{try{A=await claude.use("assets")}catch(e){}try{DB=await claude.use("db")}catch(e){}loadHist()})();
+let rt;
+$("reset").onclick=async()=>{
+  const b=$("reset");
+  if(!b.dataset.arm){b.dataset.arm="1";b.textContent="¿Seguro? Clic otra vez para confirmar";clearTimeout(rt);rt=setTimeout(()=>{delete b.dataset.arm;b.textContent="Restablecer llamadas"},4000);return}
+  clearTimeout(rt);delete b.dataset.arm;b.textContent="Restablecer llamadas";
+  await Promise.all(data.filter(d=>d.done&&d.date&&!d.k).map(sync));
+  data.forEach(d=>{d.done=false;d.date="";d.op="";d.hora="";d.obs="";d.foto="";d.k=null});save();render();loadHist();
+};
+render();
+</script>
+</body>
+</html>
