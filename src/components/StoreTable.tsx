@@ -10,7 +10,10 @@ import {
   Eye,
   X,
   Radio,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Phone,
+  MessageCircle,
+  FlaskConical
 } from 'lucide-react';
 
 interface StoreTableProps {
@@ -36,6 +39,13 @@ export const StoreTable: React.FC<StoreTableProps> = ({
 
   const todayStr = () => new Date().toISOString().split('T')[0];
   const nowTimeStr = () => new Date().toTimeString().slice(0, 5);
+
+  const handlePhoneChange = (store: StoreItem, phone: string) => {
+    onUpdateStore({
+      ...store,
+      phone
+    });
+  };
 
   const handleToggleDone = (store: StoreItem) => {
     const nextDone = !store.done;
@@ -131,6 +141,7 @@ export const StoreTable: React.FC<StoreTableProps> = ({
             <tr className="bg-slate-50 dark:bg-[#161c24] border-b border-[#e2e6ec] dark:border-[#2c3440] text-[11px] uppercase tracking-wider text-[#6b7686] dark:text-[#98a3b3]">
               <th className="py-3 px-3 text-center w-12 font-bold">#</th>
               <th className="py-3 px-3 font-bold">Local / Sucursal</th>
+              <th className="py-3 px-3 font-bold min-w-[150px]">Teléfono / Contacto</th>
               <th className="py-3 px-3 text-center font-bold">Llamada</th>
               <th className="py-3 px-3 font-bold">Fecha</th>
               <th className="py-3 px-3 font-bold">Horario</th>
@@ -143,7 +154,7 @@ export const StoreTable: React.FC<StoreTableProps> = ({
           <tbody className="divide-y divide-[#e2e6ec] dark:divide-[#2c3440] text-xs">
             {stores.length === 0 ? (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-[#6b7686] dark:text-[#98a3b3]">
+                <td colSpan={10} className="py-12 text-center text-[#6b7686] dark:text-[#98a3b3]">
                   No se encontraron locales. Pega nombres arriba para agregar.
                 </td>
               </tr>
@@ -151,11 +162,12 @@ export const StoreTable: React.FC<StoreTableProps> = ({
               stores.map((s, index) => {
                 const isOnline = !!presence.branchesOnline?.[s.id];
                 const hasObs = s.obs && s.obs.trim().length > 0;
+                const isJefaturaTest = s.id === 'store-0-jefatura-prueba' || s.name.toUpperCase().includes('JEFATURA');
 
                 return (
                   <tr
                     key={s.id}
-                    className={`transition-colors hover:bg-slate-50/70 dark:hover:bg-[#202732] ${hasObs ? 'bg-purple-50/30 dark:bg-[#231b33]/40' : ''}`}
+                    className={`transition-colors hover:bg-slate-50/70 dark:hover:bg-[#202732] ${isJefaturaTest ? 'bg-blue-50/40 dark:bg-blue-950/20' : hasObs ? 'bg-purple-50/30 dark:bg-[#231b33]/40' : ''}`}
                   >
                     {/* Index */}
                     <td className="py-3 px-3 text-center text-[#6b7686] dark:text-[#98a3b3] font-mono text-[11px]">
@@ -166,6 +178,12 @@ export const StoreTable: React.FC<StoreTableProps> = ({
                     <td className="py-3 px-3 font-semibold text-[#1c2430] dark:text-[#e7ebf0]">
                       <div className="flex items-center gap-2">
                         <span>{s.name}</span>
+                        {isJefaturaTest && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700">
+                            <FlaskConical className="w-2.5 h-2.5" />
+                            <span>Línea Prueba</span>
+                          </span>
+                        )}
                         {isOnline && (
                           <span
                             className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 animate-pulse"
@@ -174,6 +192,39 @@ export const StoreTable: React.FC<StoreTableProps> = ({
                             <Radio className="w-2.5 h-2.5" />
                             <span>En línea</span>
                           </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Phone / Number Column */}
+                    <td className="py-3 px-3">
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          placeholder="Ej: +595 982..."
+                          value={s.phone || ''}
+                          onChange={(e) => handlePhoneChange(s, e.target.value)}
+                          className={`bg-white dark:bg-[#12161c] border rounded-lg px-2 py-1 text-xs text-[#1c2430] dark:text-[#e7ebf0] focus:ring-1 focus:ring-blue-500 w-32 font-mono ${isJefaturaTest ? 'border-blue-400 dark:border-blue-700 font-semibold text-blue-700 dark:text-blue-300' : 'border-[#e2e6ec] dark:border-[#2c3440]'}`}
+                        />
+                        {s.phone && (
+                          <div className="flex items-center gap-1">
+                            <a
+                              href={`tel:${s.phone.replace(/[^0-9+]/g, '')}`}
+                              className="p-1 rounded-md text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                              title={`Llamar a ${s.phone}`}
+                            >
+                              <Phone className="w-3.5 h-3.5" />
+                            </a>
+                            <a
+                              href={`https://api.whatsapp.com/send?phone=${s.phone.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(`Hola, te contacto desde la Jefatura de Prevención para la videollamada de control del local ${s.name}: ${typeof window !== 'undefined' ? window.location.origin : ''}/?mode=branch&storeId=${encodeURIComponent(s.id)}`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+                              title={`Enviar enlace WebRTC por WhatsApp a ${s.phone}`}
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
                         )}
                       </div>
                     </td>

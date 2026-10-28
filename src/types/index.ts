@@ -1,6 +1,7 @@
 export interface StoreItem {
   id: string;
   name: string;
+  phone?: string;
   done: boolean;
   date: string;
   hora: string;
@@ -13,6 +14,7 @@ export interface StoreItem {
 export interface CallHistoryItem {
   id: string;
   storeName: string;
+  phone?: string;
   date: string;
   hora: string;
   op: string;
@@ -62,9 +64,23 @@ export const SEED_STORES = [
 ];
 
 export function getDefaultStores(): StoreItem[] {
-  return SEED_STORES.map((name, i) => ({
+  const testStore: StoreItem = {
+    id: 'store-0-jefatura-prueba',
+    name: 'JEFATURA (LOCAL DE PRUEBA)',
+    phone: '+595 982 701750',
+    done: false,
+    date: '',
+    hora: '',
+    op: 'Jefatura de Prevención',
+    obs: 'Línea de prueba de Jefatura de Prevención para pruebas de videollamadas WebRTC y enlace directo.',
+    foto: '',
+    callDuration: 0,
+  };
+
+  const seedStores = SEED_STORES.map((name, i) => ({
     id: `store-${i + 1}-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
     name,
+    phone: '',
     done: false,
     date: '',
     hora: '',
@@ -73,5 +89,7 @@ export function getDefaultStores(): StoreItem[] {
     foto: '',
     callDuration: 0,
   }));
+
+  return [testStore, ...seedStores];
 }
 

@@ -50,14 +50,16 @@ export default function App() {
 
   // Stores and History data with resilient offline/Vercel localStorage fallback
   const [stores, setStores] = useState<StoreItem[]>(() => {
+    const defaultStores = getDefaultStores();
     try {
       const saved = localStorage.getItem('llamadas_locales_v1');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((item: any, i: number) => ({
+          const list: StoreItem[] = parsed.map((item: any, i: number): StoreItem => ({
             id: item.id || `store-${i + 1}-${(item.name || '').toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
             name: item.name || `Local ${i + 1}`,
+            phone: item.phone || '',
             done: !!item.done,
             date: item.date || '',
             hora: item.hora || '',
@@ -66,12 +68,24 @@ export default function App() {
             foto: item.foto || '',
             callDuration: item.callDuration || 0
           }));
+
+          // Check if JEFATURA test store exists
+          const jefaturaIdx = list.findIndex(
+            (s) => s.id === 'store-0-jefatura-prueba' || s.name.toUpperCase().includes('JEFATURA')
+          );
+          if (jefaturaIdx !== -1) {
+            list[jefaturaIdx].phone = '+595 982 701750';
+            list[jefaturaIdx].name = 'JEFATURA (LOCAL DE PRUEBA)';
+          } else {
+            list.unshift(defaultStores[0]);
+          }
+          return list;
         }
       }
     } catch (e) {
       console.warn('LocalStorage load error:', e);
     }
-    return getDefaultStores();
+    return defaultStores;
   });
 
   const [history, setHistory] = useState<CallHistoryItem[]>(() => {
@@ -215,11 +229,21 @@ export default function App() {
 
     setStores((prev) => {
       const copy = [...prev];
-      names.forEach((nameRaw) => {
-        const name = nameRaw.trim();
+      names.forEach((line) => {
+        let name = line.trim();
+        let phone = '';
+        if (name.includes(',') || name.includes(';')) {
+          const parts = name.split(/[,;]/);
+          name = parts[0].trim();
+          phone = parts.slice(1).join(',').trim();
+        }
+        if (name.toUpperCase().includes('JEFATURA') && !phone) {
+          phone = '+595 982 701750';
+        }
         if (!name) return;
         const existing = copy.find((s) => s.name.toLowerCase() === name.toLowerCase());
         if (existing) {
+          if (phone) existing.phone = phone;
           if (markDone) {
             existing.done = true;
             existing.date = today;
@@ -227,14 +251,15 @@ export default function App() {
             existing.op = activeOperator;
           }
         } else {
-          copy.push({
+          copy.unshift({
             id: `store-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
             name,
+            phone,
             done: !!markDone,
             date: markDone ? today : '',
             hora: markDone ? now : '',
             op: markDone ? activeOperator : '',
-            obs: '',
+            obs: name.toUpperCase().includes('JEFATURA') ? 'Línea de prueba de Jefatura de Prevención para pruebas de videollamadas WebRTC.' : '',
             foto: '',
             callDuration: 0
           });
@@ -342,10 +367,11 @@ export default function App() {
   const handleCopyCSV = async () => {
     const quote = (s: any) => `"${String(s || '').replace(/"/g, '""')}"`;
     const rows = [
-      ['Local', 'Llamada', 'Fecha', 'Horario', 'Operador', 'Observaciones'].join(','),
+      ['Local', 'Teléfono', 'Llamada', 'Fecha', 'Horario', 'Operador', 'Observaciones'].join(','),
       ...filteredStores.map((s) =>
         [
           quote(s.name),
+          quote(s.phone || ''),
           s.done ? 'Realizada' : 'Pendiente',
           s.date || '',
           s.hora || '',

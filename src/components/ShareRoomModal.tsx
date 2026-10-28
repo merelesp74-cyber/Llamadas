@@ -30,7 +30,10 @@ export const ShareRoomModal: React.FC<ShareRoomModalProps> = ({ store, isOpen, o
   const whatsappText = encodeURIComponent(
     `Hola, por favor ingresa al enlace para la videollamada de Prevención para la sucursal *${store.name}*:\n${joinUrl}`
   );
-  const whatsappUrl = `https://api.whatsapp.com/send?text=${whatsappText}`;
+  const cleanPhone = store.phone ? store.phone.replace(/[^0-9]/g, '') : '';
+  const whatsappUrl = cleanPhone
+    ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${whatsappText}`
+    : `https://api.whatsapp.com/send?text=${whatsappText}`;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
@@ -51,10 +54,14 @@ export const ShareRoomModal: React.FC<ShareRoomModalProps> = ({ store, isOpen, o
           </div>
           <div>
             <h3 className="font-bold text-base sm:text-lg">
-              Conectar Sucursal {store.name}
+              Conectar {store.name}
             </h3>
             <p className="text-xs text-[#6b7686] dark:text-[#98a3b3]">
-              Acceso rápido para smartphone o terminal del local
+              {store.phone ? (
+                <span>Teléfono asociado: <strong className="text-slate-800 dark:text-slate-200">{store.phone}</strong></span>
+              ) : (
+                'Acceso rápido para smartphone o terminal del local'
+              )}
             </p>
           </div>
         </div>

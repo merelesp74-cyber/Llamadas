@@ -65,6 +65,18 @@ export const AddStoresDrawer: React.FC<AddStoresDrawerProps> = ({ onAddStores })
               <CheckSquare className="w-4 h-4 text-emerald-600" />
               <span>Marcar pegados como llamados</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                onAddStores(['JEFATURA (LOCAL DE PRUEBA)'], false);
+                setIsOpen(false);
+              }}
+              className="px-3 py-2 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              title="Añade el local de prueba de Jefatura con +595 982 701750"
+            >
+              <span>🧪 Insertar JEFATURA (+595 982 701750)</span>
+            </button>
           </div>
         </div>
       )}

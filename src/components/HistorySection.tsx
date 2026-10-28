@@ -26,11 +26,12 @@ export const HistorySection: React.FC<HistorySectionProps> = ({ history }) => {
 
   const handleExportCSV = () => {
     const quote = (val: any) => `"${String(val || '').replace(/"/g, '""')}"`;
-    const headers = ['Fecha', 'Horario', 'Local', 'Operador', 'Observaciones', 'Tiene Foto'];
+    const headers = ['Fecha', 'Horario', 'Local', 'Teléfono', 'Operador', 'Observaciones', 'Tiene Foto'];
     const rows = filteredHistory.map((h) => [
       formatDate(h.date),
       h.hora || '',
       quote(h.storeName),
+      quote(h.phone || ''),
       quote(h.op),
       quote(h.obs),
       h.foto ? 'SI' : 'NO'
@@ -84,6 +85,7 @@ export const HistorySection: React.FC<HistorySectionProps> = ({ history }) => {
               <th className="py-2.5 px-3 font-semibold">Fecha</th>
               <th className="py-2.5 px-3 font-semibold">Horario</th>
               <th className="py-2.5 px-3 font-semibold">Local</th>
+              <th className="py-2.5 px-3 font-semibold">Teléfono</th>
               <th className="py-2.5 px-3 font-semibold">Operador</th>
               <th className="py-2.5 px-3 font-semibold">Observaciones</th>
               <th className="py-2.5 px-3 text-center font-semibold w-20">Evidencia</th>
@@ -92,7 +94,7 @@ export const HistorySection: React.FC<HistorySectionProps> = ({ history }) => {
           <tbody className="divide-y divide-[#e2e6ec] dark:divide-[#2c3440]">
             {filteredHistory.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-[#6b7686] dark:text-[#98a3b3]">
+                <td colSpan={7} className="py-8 text-center text-[#6b7686] dark:text-[#98a3b3]">
                   Sin registros archivados en este período.
                 </td>
               </tr>
@@ -107,6 +109,9 @@ export const HistorySection: React.FC<HistorySectionProps> = ({ history }) => {
                   </td>
                   <td className="py-2.5 px-3 font-semibold text-[#1c2430] dark:text-[#e7ebf0]">
                     {item.storeName}
+                  </td>
+                  <td className="py-2.5 px-3 font-mono text-[#6b7686] dark:text-[#98a3b3]">
+                    {item.phone || '-'}
                   </td>
                   <td className="py-2.5 px-3 text-[#1c2430] dark:text-[#e7ebf0]">
                     {item.op || '-'}
