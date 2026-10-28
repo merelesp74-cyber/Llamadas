@@ -15,6 +15,7 @@ import { AddStoresDrawer } from './components/AddStoresDrawer';
 import { HistorySection } from './components/HistorySection';
 import { DeviceTestModal } from './components/DeviceTestModal';
 import { BranchModeView } from './components/BranchModeView';
+import { PWAInstallButton } from './components/PWAInstallButton';
 import {
   Video,
   Search,
@@ -539,6 +540,8 @@ export default function App() {
                 title="Nombre del operador para los registros"
               />
             </div>
+
+            <PWAInstallButton />
 
             <button
               onClick={() => setShowDeviceTest(true)}
