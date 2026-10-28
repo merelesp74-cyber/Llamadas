@@ -1,12 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <rect width="512" height="512" rx="128" fill="url(#grad)"/>
+  <!-- Dark Circular Background -->
+  <rect width="512" height="512" rx="128" fill="#0f172a"/>
+  
+  <!-- Outer Gold Laurel / Shield Halo -->
+  <path d="M256 60 C370 60 410 88 410 180 C410 320 256 440 256 440 C256 440 102 320 102 180 C102 88 142 60 256 60 Z" fill="#f59e0b"/>
+  
+  <!-- Inner Prevention Green Shield -->
+  <path d="M256 78 C352 78 390 102 390 184 C390 306 256 414 256 414 C256 414 122 306 122 184 C122 102 160 78 256 78 Z" fill="url(#greenGrad)"/>
+  
   <defs>
-    <linearGradient id="grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1f6feb"/>
-      <stop offset="1" stop-color="#0ea5e9"/>
+    <linearGradient id="greenGrad" x1="256" y1="78" x2="256" y2="414" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10b981"/>
+      <stop offset="1" stop-color="#047857"/>
     </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
   </defs>
-  <rect x="110" y="156" width="200" height="200" rx="24" fill="white"/>
-  <path d="M340 200L410 156V356L340 312V200Z" fill="white"/>
-  <circle cx="210" cy="256" r="40" fill="#1f6feb"/>
+  
+  <!-- Universal White Safety / Prevention Cross -->
+  <g filter="url(#shadow)">
+    <!-- Vertical Arm -->
+    <rect x="226" y="160" width="60" height="160" rx="12" fill="#ffffff"/>
+    <!-- Horizontal Arm -->
+    <rect x="176" y="210" width="160" height="60" rx="12" fill="#ffffff"/>
+  </g>
+  
+  <!-- Small Star / Badge of Protection -->
+  <circle cx="256" cy="120" r="10" fill="#fef08a"/>
 </svg>

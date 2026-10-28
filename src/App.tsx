@@ -651,6 +651,13 @@ export default function App() {
 
         {/* Monthly Call History */}
         <HistorySection history={history} />
+
+        {/* Footer */}
+        <footer className="mt-12 py-6 text-center border-t border-[#e2e6ec] dark:border-[#2c3440] text-xs text-[#6b7686] dark:text-[#98a3b3]">
+          <p className="font-semibold tracking-wide">
+            Copyright © 2026 - Desarrollado por Pedro M.
+          </p>
+        </footer>
       </main>
 
       {/* WebRTC Video Call Modal */}

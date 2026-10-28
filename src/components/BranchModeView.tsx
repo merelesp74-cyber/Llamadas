@@ -186,9 +186,11 @@ export const BranchModeView: React.FC<BranchModeViewProps> = ({
       </div>
 
       {/* Bottom Footer */}
-      <div className="text-center text-[11px] text-slate-500 pt-4 border-t border-slate-800">
-        Jefatura de Prevención • Sistema WebRTC de Control y Monitoreo de Locales
-      </div>
+      <footer className="text-center text-xs text-slate-400 pt-4 border-t border-slate-800">
+        <p className="font-semibold">
+          Copyright © 2026 - Desarrollado por Pedro M.
+        </p>
+      </footer>
     </div>
   );
 };
