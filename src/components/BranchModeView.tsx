@@ -99,9 +99,9 @@ export const BranchModeView: React.FC<BranchModeViewProps> = ({
       <div className="max-w-md w-full mx-auto my-auto py-6 flex flex-col items-center text-center">
         
         {/* Store Identifier Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-3">
-          <Store className="w-4 h-4" />
-          <span>Modo Sucursal / Terminal de Local</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
+          <img src="/icon.svg" alt="Prevención Nocturno" className="w-4 h-4 rounded-full" />
+          <span>Prevención Nocturno • Terminal de Local</span>
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-black text-white mb-1 tracking-tight">
@@ -109,7 +109,7 @@ export const BranchModeView: React.FC<BranchModeViewProps> = ({
         </h1>
 
         <p className="text-xs sm:text-sm text-slate-400 max-w-sm mb-6">
-          Terminal de videollamadas conectada para inspección y control de prevención.
+          Terminal de videollamadas conectada para inspección y control de guardia nocturna.
         </p>
 
         {/* Change Store Selector */}
@@ -171,7 +171,7 @@ export const BranchModeView: React.FC<BranchModeViewProps> = ({
           className="w-full py-3.5 px-6 rounded-2xl bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-3 shadow-xl shadow-emerald-950/50 transition-all active:scale-95 mb-3"
         >
           <PhoneCall className="w-5 h-5 animate-pulse" />
-          <span>Iniciar Videollamada con Jefatura</span>
+          <span>Iniciar Videollamada con Prevención Nocturno</span>
         </button>
 
         <div className="p-3 bg-slate-800/50 border border-slate-700/60 rounded-xl text-left text-xs text-slate-300 w-full space-y-1">

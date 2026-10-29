@@ -505,24 +505,28 @@ export default function App() {
     <div className="min-h-screen bg-[#f5f6f8] dark:bg-[#12161c] text-[#1c2430] dark:text-[#e7ebf0] font-sans transition-colors pb-16">
       
       {/* Top Navigation Header */}
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#1b212a]/90 backdrop-blur-md border-b border-[#e2e6ec] dark:border-[#2c3440] px-4 py-2.5 shadow-2xs">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#1b212a]/90 backdrop-blur-md border-b border-[#e2e6ec] dark:border-[#2c3440] px-3 sm:px-6 py-2.5 shadow-2xs">
+        <div className="max-w-[1600px] w-full mx-auto flex flex-wrap items-center justify-between gap-3">
           
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-600 text-white shadow-xs">
-              <Video className="w-5 h-5" />
+            <div className="relative group shrink-0">
+              <img
+                src="/icon.svg"
+                alt="Prevención Nocturno Logo"
+                className="w-10 h-10 rounded-xl shadow-md border border-slate-700/60 object-contain bg-[#0a1226]"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base sm:text-lg font-bold tracking-tight text-[#1c2430] dark:text-white leading-none">
-                  Dashboard de Llamadas a Locales
+                  Prevención Nocturno
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                  WebRTC P2P
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                  Guardia WebRTC
                 </span>
               </div>
               <p className="text-xs text-[#6b7686] dark:text-[#98a3b3] mt-0.5">
-                Jefatura de Prevención • Monitoreo e Inspección en Tiempo Real
+                Control y Videollamadas a Locales • Turno Nocturno
               </p>
             </div>
           </div>
@@ -570,7 +574,7 @@ export default function App() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 py-5">
+      <main className="max-w-[1600px] w-full mx-auto px-2 sm:px-6 py-4">
         
         {/* KPI Cards & Progress Bar */}
         <KPICards stores={stores} presence={webRTC.presence} />
